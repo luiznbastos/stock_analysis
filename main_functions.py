@@ -122,7 +122,6 @@ def create_wallet_history(wallet_stocks, start_date, end_date):
   wallet_history = pd.DataFrame()
   wallet_dividends = pd.DataFrame()
   wallet_splits =  pd.DataFrame()
-  print(start_date,end_date)
   
   for stock, stock_info in wallet_stocks.items():
     stock_history_dataframe = stock_info.history(start=start_date,end=end_date)
