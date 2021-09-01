@@ -36,6 +36,23 @@ def sharpe_ratio_analysis(current_portfolio_on_history, risk_free_return):
   return risk_return
 
 
+def get_ibov(start_date, end_date):
+    ibov = Ticker("^BVSP")
+    ibov_history = ibov.history(start='2018-08-03',end='2021-08-02')
+    ibov_history.drop(ibov_history.columns.difference(['close']), 1, inplace=True)
+
+    ibov_history.index = ibov_history.index.droplevel(0)
+    ibov_history.rename(columns={"close":"IBOV"}, inplace=True)
+    portfolio_ibov_dataframe = pd.merge(
+                                  ibov_history,
+                                  current_portfolio_on_history,
+                                  how='outer',
+                                  left_index=True,
+                                  right_index=True
+                                  ).fillna(method="bfill").fillna(method='ffill')
+
+    return portfolio_ibov_dataframe
+
 def get_current_moment_status(position_history, price_history, total_investment_over_time):
   current_position = position_history.head(1)
   current_price = price_history.head(1)
@@ -170,20 +187,3 @@ def create_wallet_history(wallet_stocks, start_date, end_date):
                               ).fillna(method="bfill").fillna(method='ffill')
 
   return wallet_history, wallet_dividends, wallet_splits
-
-def get_ibov(start_date, end_date):
-    ibov = Ticker("^BVSP")
-    ibov_history = ibov.history(start='2018-08-03',end='2021-08-02')
-    ibov_history.drop(ibov_history.columns.difference(['close']), 1, inplace=True)
-
-    ibov_history.index = ibov_history.index.droplevel(0)
-    ibov_history.rename(columns={"close":"IBOV"}, inplace=True)
-    portfolio_ibov_dataframe = pd.merge(
-                                  ibov_history,
-                                  current_portfolio_on_history,
-                                  how='outer',
-                                  left_index=True,
-                                  right_index=True
-                                  ).fillna(method="bfill").fillna(method='ffill')
-
-    return portfolio_ibov_dataframe
