@@ -38,7 +38,7 @@ def sharpe_ratio_analysis(current_portfolio_on_history, risk_free_return):
 
 def get_ibov(start_date, end_date, current_portfolio_on_history):
     ibov = Ticker("^BVSP")
-    ibov_history = ibov.history(start='2018-08-03',end='2021-08-02')
+    ibov_history = ibov.history(start=start_date,end=end_date)
     ibov_history.drop(ibov_history.columns.difference(['close']), 1, inplace=True)
 
     ibov_history.index = ibov_history.index.droplevel(0)
