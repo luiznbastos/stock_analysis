@@ -170,3 +170,20 @@ def create_wallet_history(wallet_stocks, start_date, end_date):
                               ).fillna(method="bfill").fillna(method='ffill')
 
   return wallet_history, wallet_dividends, wallet_splits
+
+def get_ibov(start_date, end_date):
+    ibov = Ticker("^BVSP")
+    ibov_history = ibov.history(start='2018-08-03',end='2021-08-02')
+    ibov_history.drop(ibov_history.columns.difference(['close']), 1, inplace=True)
+
+    ibov_history.index = ibov_history.index.droplevel(0)
+    ibov_history.rename(columns={"close":"IBOV"}, inplace=True)
+    portfolio_ibov_dataframe = pd.merge(
+                                  ibov_history,
+                                  current_portfolio_on_history,
+                                  how='outer',
+                                  left_index=True,
+                                  right_index=True
+                                  ).fillna(method="bfill").fillna(method='ffill')
+
+    return portfolio_ibov_dataframe
